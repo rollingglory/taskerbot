@@ -214,4 +214,4 @@ This repository consists of 3 parts of tasker:
 
 * Move copytext string to separate file, replace with variables
 * Turn off reminder on holidays
-
+* Log via web
