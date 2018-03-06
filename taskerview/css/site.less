@@ -1,0 +1,323 @@
+@FONT:'Raleway','Roboto',sans-serif;
+@WHITE:#F9F9F9;
+@DARK:#CFD8DC;
+@LIGHT:#ECEFF1;
+@ACCENT1:#FFBD66;
+@ACCENT2:#5ED3B6;
+@ACCENT3:#52BFEA;
+@ACCENT4:#F27F52;
+@TEXT:#263238;
+
+html,body{
+	background-color:@WHITE;
+	color:@TEXT;
+	font-family:@FONT;
+}
+
+hr{
+	border-color:@DARK;
+}
+
+a{
+	color:@TEXT;
+	padding-bottom:1px;
+	border-bottom:1px solid transparent;
+	&:hover{
+		text-decoration:none;
+		border-bottom-color:@TEXT;
+	}
+}
+
+#projects .code{
+	a{
+		color:@WHITE;
+	}
+}
+
+.tasker{
+	min-width:1300px;
+}
+
+.sidebar{
+	background-color:@DARK;
+	position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	z-index:1000;
+	h1,h2{
+		font-weight:bold;
+		text-transform:uppercase;
+	}
+	h2{
+		margin-top:2em;
+		font-size:1.3em;
+	}
+	ol{
+		padding-left:0;
+		list-style:none;
+		li{
+			margin-bottom:7px;
+			.code{
+				color:white;
+				display:inline-block;
+				padding:3px;
+				margin-right:5px;
+				vertical-align:middle;
+				width:50px;
+				overflow:hidden;
+				text-align:center;
+			}
+			.title{
+				display:inline-block;
+				padding:3px;
+				vertical-align:middle;
+			}
+			&:nth-child(1n){
+				.code{
+					background-color:@ACCENT1;
+				}
+			}
+			&:nth-child(2n){
+				.code{
+					background-color:@ACCENT2;
+				}
+			}
+			&:nth-child(3n){
+				.code{
+					background-color:@ACCENT3;
+				}
+			}
+			&:nth-child(4n){
+				.code{
+					background-color:@ACCENT4;
+				}
+			}
+		}
+	}
+}
+
+.main{
+	padding-right:0;
+	position:relative;
+	min-width:1500px;
+	&.hide-left{
+		left:-8%;
+	}
+}
+
+.log-header{
+	background-color:@WHITE;
+	border-bottom:1px solid #CFCFCF;
+	margin-bottom:10px;
+	position:absolute;
+	left:0;
+	top:0;
+	min-width:1500px;
+	text-align:center;
+	z-index:998;
+	h2{
+		display:inline-block;
+		font-size:1.75em;
+		font-weight:bold;
+		margin:20px 20px 10px;
+		text-transform:uppercase;
+	}
+	.fa{
+		&:hover{
+			cursor:pointer;
+		}
+	}
+}
+
+#logs{
+	padding-top:85px;
+	min-width:1500px;
+}
+
+#days,#logs{
+	.column{
+		display:inline-block;
+		vertical-align:top;
+		margin-right:.5%;
+		width:12.5%;
+		&:first-child,&.coasters{
+			width:8%;
+		}
+	}
+}
+
+.day{
+	.title{
+		font-size:1.25em;
+		font-weight:bold;
+		height:30px;
+		text-align:left;
+	}
+	&.day-offset-1{
+		margin-left:0;
+	}
+	&.day-offset-2{
+		margin-left:13%;
+	}
+	&.day-offset-3{
+		margin-left:26%;
+	}
+	&.day-offset-4{
+		margin-left:39%;
+	}
+	&.day-offset-5{
+		margin-left:52%;
+	}
+	&.day-offset-6{
+		margin-left:65%;
+	}
+	&.day-offset-0{
+		margin-left:78%;
+	}
+}
+.popup{
+	display:none;
+	position:fixed;
+	z-index:1000;
+	top:0;
+	bottom:0;
+	right:0;
+	left:0;
+	background-color:fade(@TEXT,80%);
+	.content{
+		background-color:@LIGHT;
+		position:absolute;
+		top:50%;
+		left:50%;
+		margin:-110px 0 0 -200px;
+		padding:20px;
+		width:400px;
+
+		input{
+			margin-bottom:10px;
+		}
+		h3{
+			margin-top:.5em;
+		}
+		.notice{
+			display:none;
+		}
+		.btn{
+			background-color:@TEXT;
+			color:white;
+		}
+	}
+	.close{
+		font-size:2em;
+		position:absolute;
+		top:5px;
+		right:10px;
+		&:hover{
+			cursor:pointer;
+		}
+	}
+}
+.shifts{
+	list-style:none;
+	padding:0;
+	&.linear{
+		text-align:left;
+		.slimScrollDiv{
+			margin-bottom:10px;
+			border-bottom:1px solid #DFDFDF;
+		}
+		li{
+			color:@TEXT;
+			height:125px;
+			float:none;
+			margin-bottom:10px;
+			overflow:hidden;
+			padding:0 5px;
+			position:relative;
+			width:100%;
+			&:hover{
+				cursor:default;
+				&:after{
+					display:block;	
+				}
+			}
+			&.s1{
+				&:after{
+					content:'Shift 1';
+				}
+			}
+			&.s2{
+				&:after{
+					content:'Shift 2';
+				}
+			}
+			&.s3{
+				&:after{
+					content:'Shift 3';
+				}
+			}
+			&.s4{
+				&:after{
+					content:'Shift 4';
+				}
+			}
+			&.s5{
+				&:after{
+					content:'Shift 5';
+				}
+			}
+			&.s6{
+				&:after{
+					content:'Shift 6';
+				}
+			}
+			&:after{
+				background-color:@ACCENT1;
+				color:@WHITE;
+				display:none;
+				padding:1px 5px;
+				position:absolute;
+				left:0;
+				top:0;
+			}
+		}
+	}
+	li{
+		border:1px solid #DFDFDF;
+		color:white;
+		float:left;
+		height:25px;
+		line-height:25px;
+		margin:1px .5% 1px 0;
+		overflow:hidden;
+		width:16%;
+		&.proj-X{
+			background-color:@DARK;
+		}
+		&:hover{
+			cursor:pointer;
+		}
+	}
+	&:after{
+		clear:both;
+		content:'';
+		display:block;
+	}
+}
+
+.coasters,.day{
+	text-align:center;
+	>ul{
+		list-style:none;
+		padding:0;
+		>li{
+			line-height:27px;
+			height:27px;
+			margin-bottom:10px;
+			&.title{
+				height:30px;
+			}
+		}
+	}
+}

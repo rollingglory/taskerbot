@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Rolling Tasker</title>
+	
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" item-content="IE=edge,chrome=1">
+    <meta name="description" item-content="Rolling Glory's Task Logs">
+	
+	<!--remove if not responsive-->
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" >
+</head>
+<body>
+
+	<h2>ADD LOG</h2>
+	<form id="log-form" method="POST" action="log">
+		<div class="form-group">
+            <label>id user</label>
+            <input type="text" name="user_id" />
+        </div>
+        <div class="form-group">
+            <label>id project</label>
+            <input type="text" name="project_id" />
+        </div>
+        <div class="form-group">
+            <label>shift</label>
+            <input type="text" name="shift" />
+        </div>
+        <div class="form-group">
+            <label>date</label>
+            <input type="text" name="date" />
+        </div>
+        <div class="form-group">
+            <label>content</label>
+            <textarea name="content"></textarea>
+        </div>
+        <input type="submit" value="SUBMIT" />
+	</form>
+
+	<h2>EDIT LOG</h2>
+	<form id="edit-log-form" method="POST" action="edit_log">
+		<div class="form-group">
+            <label>id log</label>
+            <input type="text" name="log_id" />
+        </div>
+        <div class="form-group">
+            <label>id project</label>
+            <input type="text" name="project_id" />
+        </div>
+        <div class="form-group">
+            <label>content</label>
+            <textarea name="content"></textarea>
+        </div>
+        <input type="submit" value="SUBMIT" />
+	</form>
+
+	<h2>REMOVE LOG</h2>
+	<form id="remove-log-form" method="POST" action="edit_log">
+		<div class="form-group">
+            <label>id log</label>
+            <input type="text" name="log_id" />
+        </div>
+        <input type="submit" value="SUBMIT" />
+	</form>
+
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		// 5832894d522d980012adff55
+		// 58328a70522d980012adff5c
+		$("#log-form").submit(function(e){
+        	e.preventDefault();
+        	$.ajax({
+			    type: "POST",
+			    url: "/log",
+			    data: $("#log-form").serialize(),
+			    success: 
+			      	function( response ) {
+			        	alert(response.success + ": " + response.message);
+			      	}
+		  	});
+        });
+
+        $("#edit-log-form").submit(function(e){
+        	e.preventDefault();
+        	$.ajax({
+			    type: "POST",
+			    url: "/edit_log",
+			    data: $("#edit-log-form").serialize(),
+			    success: 
+			      	function( response ) {
+			        	alert(response.success + ": " + response.message);
+			      	}
+		  	});
+        });
+
+        $("#remove-log-form").submit(function(e){
+        	e.preventDefault();
+        	$.ajax({
+			    type: "POST",
+			    url: "/remove_log",
+			    data: $("#remove-log-form").serialize(),
+			    success: 
+			      	function( response ) {
+			        	alert(response.success + ": " + response.message);
+			      	}
+		  	});
+        });
+	</script>
+</body>
+</html>

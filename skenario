@@ -1,0 +1,33 @@
+- add project
+	- kalo di grup
+		- jika bukan admin -> berikan info harus admin
+		- jika admin -> private chat ditanyain kode - nama (bisa multiline) -> berikan mesej project berhasil disimpan. add_project untuk nambah lagi
+	- kalo private
+		- jika bukan coaster -> berikan info bot untuk kalangan terbatas
+		- jika bukan admin -> berikan info harus admin
+		- jika admin -> private chat ditanyain kode - nama (bisa multiline) -> berikan mesej project berhasil disimpan. add_project untuk nambah lagi
+
+- list project
+	- berikan list project dengan format [KODE]<spasi>Nama
+
+- remove project
+	- kalo di grup
+		- jika bukan admin -> berikan info harus admin
+		- jika admin -> private chat ditanyain kode project yang mau dihapus. jika ada dihapus, jika tidak ada berikan info tidak ada
+	- kalo private
+		- jika bukan coaster -> berikan info bot untuk kalangan terbatas
+		- jika bukan admin -> berikan info harus admin
+		- jika admin -> private chat ditanyain kode project yang mau dihapus. jika ada dihapus, jika tidak ada berikan info tidak ada
+
+- reminder isi log
+	- hanya bisa admin
+	- log_reminder
+	- semua anggota coaster akan dikirim private mesej untuk mengisi log
+	- keluar pilihan atau dengan format log_last<spasi>kode<spasi>deskripsi
+
+- log
+	- manual log jika pilihan terlewat
+	- log<spasi>tanggal<spasi>shift<spasi>kode<spasi>deskripsi
+
+- rekap
+	hanya admin. menampilkan rekap

@@ -1,0 +1,74 @@
+HELP -> isi command help
+/join bergabung ke dalam coaster tasker 
+/add_project tambah project baru (hanya admin)
+/remove_project hapus project (hanya admin)
+/list_project lihat daftar project
+/log_reminder ingatkan coaster untuk mengisi log (hanya admin)
+/log isi log
+
+DONE -> kalo beres melakukan suatu command
+Project [" + msg.text + "] berhasil ditambahkan!
+Project [" + msg.text + "] telah dihapus.
+Tidak ada proses yang sedang berjalan
+
+LOG 
+Kamu belum terdaftar di dalam rolling tasker. Gunakan command /join untuk mendaftarkan diri kamu ke dalam coaster.
+Format salah. Ketik "log<spasi>[shift]<spasi>[tanggal]<spasi>[bulan (opsional)]<spasi>[tahun (opsional)]" untuk melakukan logging.
+Logging gagal ditambahkan. Coba lagi dalam beberapa saat.
+
+LOG REMINDER
+Kamu belum terdaftar di dalam rolling tasker. Gunakan command /join untuk mendaftarkan diri kamu ke dalam coaster.
+Format salah. Ketik "log_reminder<spasi>[shift]" untuk mengingatkan coaster mengisi log.
+Perintah gagal dilaksanakan. Command log_reminder hanya bisa digunakan oleh admin.
+Reminder gagal dikirim. Coba lagi dalam beberapa saat.
+Pengambilan data user gagal. Coba lagi dalam beberapa saat.
+Project dengan kode [" + msg.text + "] tidak terdaftar. Periksa kembali kode project yang kamu masukkan.
+Tuliskan deskripsi singkat apa yang kamu kerjakan.
+Data project gagal disimpan. Coba lagi dalam beberapa saat.
+Log gagal disimpan. Coba lagi dalam beberapa saat.
+Logging berhasil! Terima kasih ya!
+Deskripsi gagal ditambahkan. Coba lagi dalam beberapa saat.
+
+LIST PROJECT
+Daftar project yang aktif saat ini:
+Data project gagal diambil. Coba lagi dalam beberapa saat.
+
+REMOVE PROJECT 
+Kamu belum terdaftar di dalam rolling tasker. Gunakan command /join untuk mendaftarkan diri kamu ke dalam coaster.
+Gagal menghapus project. Command remove_project hanya bisa digunakan oleh admin.
+Gagal menghapus project. Coba lagi dalam beberapa saat.
+Silakan pilih project yang akan dihapus:
+Gagal menghapus project. Coba lagi dalam beberapa saat.
+Tidak ada project dengan kode [" + msg.text + "]
+Project dengan kode [" + msg.text + "] berhasil dihapus. Lanjutkan menghapus project dengan memasukan kode project atau dengan menggunakan command sebelumnya. Ketik /done jika sudah selesai.
+
+ADD PROJECT 
+Silakan terlebih dahulu memasukkan command add_project di dalam group
+Tambahkan project baru dengan format "[kode project] - [nama project]" atau masukan command /done jika sudah selesai menambahkan.
+Kamu belum terdaftar di dalam rolling tasker. Gunakan command /join untuk mendaftarkan diri kamu ke dalam coaster.
+Tambahkan project baru dengan format "[kode project] - [nama project]" atau masukan command /done jika sudah selesai menambahkan.
+Perintah gagal dilaksanakan. Command add_project hanya bisa digunakan oleh admin.
+Project gagal ditambahkan. Coba lagi dalam beberapa saat.
+Format salah. Ketik "[kode project] - [nama project]" untuk menambahkan project baru.
+Project dengan kode [" + project.code + "] sudah ada.
+Project dengan kode [" + project.code + "] berhasil didaftarkan! Gunakan format sebelumnya untuk menambah project lain atau masukan command '/done' jika sudah selesai menambahkan.
+Project gagal ditambahkan. Coba lagi dalam beberapa saat.
+Project gagal ditambahkan. Coba lagi dalam beberapa saat.
+
+JOIN 
+Command ini hanya bisa digunakan di dalam group coaster.
+Selamat, kamu berhasil bergabung ke dalam rolling task! Silakan klik [start](https://telegram.me/rollingtaskerbot) untuk memulai logging.
+Kamu sudah tergabung sebelumnya di dalam rolling task.
+Selamat, kamu berhasil bergabung ke dalam rolling task! Silakan klik [start](https://telegram.me/rollingtaskerbot) untuk memulai logging.
+Pendaftaran user gagal. Coba lagi dalam beberapa saat.
+
+START 
+Command ini hanya digunakan di dalam private chat
+Maaf, bot ini dibuat untuk kebutuhan internal dan tidak terbuka untuk umum.
+Halo, kamu sudah terdaftar di dalam rolling task! Saya akan membantu kamu dalam melakukan logging.
+Terjadi kesalahan, silakan ketikan kembali command /start
+User gagal ditambahkan. Coba lagi dalam beberapa saat.
+Halo, aku adalah rollingtaskerbot! Aku bertugas untuk membantu para coaster dalam melakukan logging.
+Silakan ketik command /join untuk bergabung dalam daftar user di dalam tasker.
+Maaf, bot ini dibuat untuk kebutuhan internal dan tidak terbuka untuk umum.
+
