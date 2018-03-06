@@ -24,7 +24,7 @@ var firstDay = new Date(year, month - 1, '1', '07', '00', '00').getDay();
 var idUser = gup("user");
 var idProject = gup("project");
 
-var url = "http://rollingtasker.herokuapp.com/";
+var url = "http://rollingtaskerbot.herokuapp.com/";
 
 $(document).ready(function(){
 	$("#month").text(months[month - 1]+" "+year);
