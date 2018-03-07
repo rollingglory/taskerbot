@@ -50,13 +50,20 @@
         		<div class="content">
         			<div class="close">&times;</div>
         			<h3></h3>
-        			<p></p>
-        			<form>
-	        			<label>TaskerBot Command</label>
-	        			<input id="command" class="form-control" />
+        			<form id="log-form">
+        				<label>Project:</label>
+        				<select name="project_id" id="projects-dropdown">
+        				</select>
+        				<br/>
+	        			<label>Description:</label>
+	        			<!-- <input id="command" class="form-control" /> -->
+	        			<input id="input_log" name="content" class="form-control" />
+	        			<input id="log-user-id" name="user_id" type="hidden"/>
+	        			<input id="log-date" name="date" type="hidden"/>
+	        			<input id="log-shift" name="shift" type="hidden"/>
 	        			<div class="text-right">
-	        				<span class="notice">Command copied to clipboard!</span>
-		        			<button class="btn btn-default">Copy</button>
+	        				<!-- <span class="notice">Command copied to clipboard!</span> -->
+		        			<button class="btn btn-default">Submit</button>
 		        		</div>
 	        		</form>
         		</div>

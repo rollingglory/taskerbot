@@ -24,7 +24,7 @@ var firstDay = new Date(year, month - 1, '1', '07', '00', '00').getDay();
 var idUser = gup("user");
 var idProject = gup("project");
 
-var url = "http://rollingtaskerbot.herokuapp.com/";
+var url = "https://rollingtaskerbot.herokuapp.com/";
 
 $(document).ready(function(){
 	$("#month").text(months[month - 1]+" "+year);
@@ -51,7 +51,7 @@ $(document).ready(function(){
 			var coasterLogList = "";
 			for(var i = 0; i < coasters.length; i++){
 				coastersHtml += "<li><a href=\"byuser.html?user="+coasters[i]._id+"\">"+coasters[i].alias+"</a></li>";
-				coasterLogList += "<li class=\"shift-owner "+coasters[i].alias.toLowerCase()+"\" data-coaster=\""+coasters[i].alias+"\">"+shifts+"</li>";
+				coasterLogList += "<li class=\"shift-owner "+coasters[i].alias.toLowerCase()+"\" data-coaster=\""+coasters[i].alias+"\" data-coaster-id=\""+coasters[i]._id+"\">"+shifts+"</li>";
 			}
 			coastersHtml += "</ul></div>";
 			coasterLogList += "";
@@ -82,6 +82,7 @@ $(document).ready(function(){
 			for(var i = 0; i < projects.length; i++){
 				if(projects[i].code != "X")
 				$("#projects").append("<li><div class=\"code proj-"+projects[i].code.replace(/[^\w\s]/gi, '')+"\"><a href=\"byproject.html?project="+projects[i]._id+"\">"+projects[i].code+"</a></div><div class=\"title\"><a href=\"byproject.html?project="+projects[i]._id+"\">"+projects[i].name+"</a></div></li>");
+				$("#projects-dropdown").append("<option value=\""+projects[i]._id+"\">"+projects[i].code+"</option>");
 			}
 			getRecap();
 		})
@@ -125,7 +126,7 @@ $(document).ready(function(){
 						date = new Date(logs[i].date);
 						if(date.getMonth() == month - 1){
 							date = date.getDate();
-							$("#logs .d"+(date - 1)+" .shifts .s"+logs[i].shift).append(logs[i].projectId.code).addClass("proj-"+logs[i].projectId.code.replace(/[^\w\s]/gi, '')).attr("title",logs[i].content);
+							$("#logs .d"+(date - 1)+" .shifts .s"+logs[i].shift).append(logs[i].projectId.code).addClass("proj-"+logs[i].projectId.code.replace(/[^\w\s]/gi, '')).attr("title",logs[i].content).data("project-id",logs[i].projectId._id);
 						}
 					}
 					for(var x = 0; x < projects.length; x++){
@@ -188,7 +189,7 @@ function getRecap(){
 				date = new Date(logs[i].date);
 				if(date.getMonth() == month - 1){
 					date = date.getDate();
-					$("#logs .d"+(date - 1)+" ."+logs[i].userId.alias.toLowerCase()+" .shifts .s"+logs[i].shift).append(logs[i].projectId.code).addClass("proj-"+logs[i].projectId.code.replace(/[^\w\s]/gi, '')).attr("title",logs[i].content);
+					$("#logs .d"+(date - 1)+" ."+logs[i].userId.alias.toLowerCase()+" .shifts .s"+logs[i].shift).append(logs[i].projectId.code).addClass("proj-"+logs[i].projectId.code.replace(/[^\w\s]/gi, '')).attr("title",logs[i].content).data("project-id",logs[i].projectId._id);
 				}
 			}
 			for(var x = 0; x < projects.length; x++){
@@ -210,20 +211,29 @@ function gup( name, url ) {
     return results == null ? null : results[1];
 }
 function showPopup(elem){
+	$(".popup form")[0].reset();
+	$("#projects-dropdown option").removeAttr("selected");
 	var date = elem.parents(".day").data("date");
 	var shift = elem.data("shift");
 	var name = elem.parents(".shift-owner").data("coaster");
+	var id = elem.parents(".shift-owner").data("coaster-id");
+
+	$("#log-user-id").val(id);
+	$("#log-shift").val(shift);
+	$("#log-date").val(date+"/"+month+"/"+year);
 	if(typeof(name) == "undefined"){
 		name = $("#coaster").text();
 	}
 	$(".popup h3").text(name+" | Shift "+shift+", "+date+" "+$("#month").text());
 	if(elem.text != "" && typeof(elem.attr("title")) != "undefined"){
-		$(".popup p").text("["+elem.text()+"] - "+elem.attr("title"));	
+		$(".popup p").text("["+elem.text()+"] - "+elem.attr("title"));
+		$("#input_log").val(elem.attr("title"));
+		$("#projects-dropdown option[value='"+elem.data("project-id")+"']").attr("selected","selected");	
 	}
 	else{
 		$(".popup p").html("<i>Kamu belum mengisi log, huh.</i>");
 	}
-	$(".popup input").val("/log "+shift+" "+date+" "+month+" "+year);
+	// $(".popup input").val("/log "+shift+" "+date+" "+month+" "+year);
 	$(".popup").fadeIn();
 }
 function prevMonth(){
@@ -265,10 +275,14 @@ $(".popup").click(function(){
 })
 $(".popup .btn").click(function(e){
 	e.preventDefault();
-	$(".popup input").select();
-	document.execCommand("copy");
-	$(".notice").fadeIn();
-	setTimeout(function(){
-		$(".notice").fadeOut();
-	},1000)
+	// $(".popup input").select();
+	// document.execCommand("copy");
+	// $(".notice").fadeIn();
+	// setTimeout(function(){
+	// 	$(".notice").fadeOut();
+	// },1000)
+	$.post( url+"log", $("#log-form").serialize())
+  		.done(function( data ) {
+    		location.reload();
+  	});
 })

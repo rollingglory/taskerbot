@@ -54,7 +54,7 @@ db.once('open', function callback () {
 var User = require('./models/user.js');
 var Project = require('./models/project.js');
 var Log = require('./models/log.js');
-var allowedOrigins = ["http://glyph.rollingglory.com", "http://localhost"];
+var allowedOrigins = ["http://glyph.rollingglory.com", "http://localhost", "http://localhost:8080"];
 
 app.get('/recap/:month-:year', function (req, res) {
   var origin = req.headers.origin;
@@ -162,6 +162,11 @@ app.get('/projects',function(req,res){
 })
 
 app.post('/log', function(req, res){
+  var origin = req.headers.origin;
+  if(allowedOrigins.indexOf(origin) > -1){
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+
   var userId = req.body.user_id;
   var projectId = req.body.project_id;
   var date = req.body.date;
