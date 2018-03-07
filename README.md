@@ -192,6 +192,8 @@ This repository consists of 3 parts of tasker:
       - TASKERBOT_GROUP_ID
       - TASKERBOT_MONGO_CRED
 
+   * Run `npm install` in command prompt
+
    * Run `node bot.js` in command prompt
 
 * Tasker API
@@ -201,6 +203,8 @@ This repository consists of 3 parts of tasker:
       
    * Set the following environment variables:
       - TASKERBOT_MONGO_CRED
+
+   * Run `npm install` in command prompt
 
    * Run `node web.js` in command prompt
 
