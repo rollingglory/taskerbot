@@ -28,7 +28,7 @@ var server = app.listen(process.env.PORT, function () {
 // Heroku Keep Alive Ping
 var http = require('http'); //importing http
 setInterval(function() {
-    http.get('http://rollingtasker.herokuapp.com', function(res) {
+    http.get('https://rollingtaskerbot.herokuapp.com', function(res) {
         if (res.statusCode !== 200) {
             console.log('Heroku Keep Alive Ping: Error - Status Code ' +
                 res.statusCode);
