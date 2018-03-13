@@ -1,2 +1,4 @@
-require('./bot');
-require('./web');
+'use strict';
+
+require(`./bot`);
+require(`./web`);

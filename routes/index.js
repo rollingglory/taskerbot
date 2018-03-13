@@ -1,13 +1,14 @@
-var express = require('express');
-var router = express.Router();
-var packageInfo = require('../package.json');
+const express = require('express');
 
-router.get('/', function (req, res) {
-	res.send({ version: packageInfo.version });
+const router = express.Router();
+const packageInfo = require('../package.json');
+
+router.get('/', (req, res) => {
+  res.send({ version: packageInfo.version });
 });
 
-router.get('/testapi', function (req, res) {
-	res.render('testapi', { version: packageInfo.version });
+router.get('/testapi', (req, res) => {
+  res.render('testapi', { version: packageInfo.version });
 });
 
 module.exports = router;

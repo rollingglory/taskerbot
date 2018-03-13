@@ -17,7 +17,19 @@
     "mongoose": "^4.6.8",
     "node-telegram-bot-api": "^0.24.0"
   },
+  "now": {
+    "alias": "taskerbot"
+  },
+  "eslintConfig": {
+    "extends": "bentinata"
+  },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "eslint": "^4.18.2",
+    "eslint-config-bentinata": "^2.0.2",
+    "eslint-plugin-lodash": "^2.6.1",
+    "eslint-plugin-lodash-fp": "^2.1.3",
+    "eslint-plugin-promise": "^3.7.0",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.11.1"
   }
 }
