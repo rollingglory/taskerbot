@@ -1,3 +1,5 @@
+'use strict';
+
 let coasters = [];
 let projects = [];
 
@@ -59,18 +61,16 @@ $(document).ready(() => {
   if (!idUser && !idProject) {
     $.ajax({
       url: `${url}users`,
-    }).done((data) => {
+    }).done(data => {
       coasters = data.users;
       coastersHtml = '<div class="column coasters"><ul><li class="title"></li>';
       let coasterLogList = '';
       for (let i = 0; i < coasters.length; i++) {
         coastersHtml += `<li><a href="byuser.html?user=${coasters[i]._id}">${
-            coasters[i].alias
+          coasters[i].alias
         }</a></li>`;
-        coasterLogList += `<li class="shift-owner ${coasters[
-            coasters[i].alias.toLowerCase()
-          }" data-coaster="${
-            coasters[i].alias
+        coasterLogList += `<li class="shift-owner ${coasters[coasters[i].alias.toLowerCase()]}" data-coaster="${
+          coasters[i].alias
         }" data-coaster-id="${coasters[i]._id}">${shifts}</li>`;
       }
       coastersHtml += '</ul></div>';
@@ -82,7 +82,7 @@ $(document).ready(() => {
         let dayHtml = '<div class="column day';
         if (x == 0) {
           dayHtml += ` day-offset-${firstDay}`;
-        } else if ((x + firstDay) % 7 == 1) $('#logs').append(`<hr />${  coastersHtml}`);
+        } else if ((x + firstDay) % 7 == 1) $('#logs').append(`<hr />${coastersHtml}`);
 
         dayHtml += ` d${x}" data-date=${x + 1}><ul><li class="title">${x +
           1}</li>${coasterLogList}`;
@@ -94,23 +94,22 @@ $(document).ready(() => {
     });
     $.ajax({
       url: `${url}projects`,
-    }).done((data) => {
+    }).done(data => {
       projects = data.projects;
       for (let i = 0; i < projects.length; i++) {
-        if (projects[i].code != 'X')
-          $('#projects').append(
-            '<li><div class="code proj-' +
-              projects[i].code.replace(/[^\w\s]/gi, '') +
-              '"><a href="byproject.html?project=' +
-              projects[i]._id +
-              '">' +
-              projects[i].code +
-              '</a></div><div class="title"><a href="byproject.html?project=' +
-              projects[i]._id +
-              '">' +
-              projects[i].name +
-              '</a></div></li>'
-          );
+        if (projects[i].code != 'X') {
+          $('#projects').append(`<li><div class="code proj-${
+            projects[i].code.replace(/[^\w\s]/gi, '')
+          }"><a href="byproject.html?project=${
+            projects[i]._id
+          }">${
+            projects[i].code
+          }</a></div><div class="title"><a href="byproject.html?project=${
+            projects[i]._id
+          }">${
+            projects[i].name
+          }</a></div></li>`);
+        }
         $('#projects-dropdown').append(`<option value="${projects[i]._id}">${projects[i].code}</option>`);
       }
       getRecap();
@@ -120,8 +119,7 @@ $(document).ready(() => {
       let dayHtml = '<div class="column day';
       if (x == 0) {
         dayHtml += ` day-offset-${firstDay}`;
-      } else if ((x + firstDay) % 7 == 1)
-        $('#logs').append(`<hr />${separatorHtml}`);
+      } else if ((x + firstDay) % 7 == 1) $('#logs').append(`<hr />${separatorHtml}`);
 
       dayHtml += ` d${x}" data-date=${x + 1}><ul><li class="title">${x +
         1}</li>${shifts}</ul></div>`;
@@ -131,23 +129,22 @@ $(document).ready(() => {
     if (idUser) {
       $.ajax({
         url: `${url}projects`,
-      }).done((data) => {
+      }).done(data => {
         projects = data.projects;
         for (let i = 0; i < projects.length; i++) {
-          if (projects[i].code != 'X')
-            $('#projects').append(
-              '<li><div class="code proj-' +
-                projects[i].code.replace(/[^\w\s]/gi, '') +
-                '"><a href="byproject.html?project=' +
-                projects[i]._id +
-                '">' +
-                projects[i].code +
-                '</a></div><div class="title"><a href="byproject.html?project=' +
-                projects[i]._id +
-                '">' +
-                projects[i].name +
-                '</a></div></li>'
-            );
+          if (projects[i].code != 'X') {
+            $('#projects').append(`<li><div class="code proj-${
+              projects[i].code.replace(/[^\w\s]/gi, '')
+            }"><a href="byproject.html?project=${
+              projects[i]._id
+            }">${
+              projects[i].code
+            }</a></div><div class="title"><a href="byproject.html?project=${
+              projects[i]._id
+            }">${
+              projects[i].name
+            }</a></div></li>`);
+          }
         }
         $.ajax({
           url: `${url}recap/${month}-${year}/user/${idUser}`,
@@ -169,9 +166,7 @@ $(document).ready(() => {
           }
           for (let x = 0; x < projects.length; x++) {
             $(`.proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css({
-              'background-color': $(
-                `#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`
-              ).css('background-color'),
+              'background-color': $(`#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css('background-color'),
             });
           }
           $('.shifts li').click(function () {
@@ -187,7 +182,7 @@ $(document).ready(() => {
       $('.shifts li').append('<p></p>');
       $.ajax({
         url: `${url}recap/${month}-${year}/project/${idProject}`,
-      }).done((data) => {
+      }).done(data => {
         const logs = data.logs;
         let date;
         $('#project').text(data.project);
@@ -197,10 +192,10 @@ $(document).ready(() => {
             date = new Date(logs[i].date);
             if (date.getMonth() == month - 1) {
               date = date.getDate();
-              $(`#logs .d${  date - 1  } .shifts .s${  logs[i].shift  } p`).append(`${logs[i].userId.alias} - ${logs[i].content}<br/>`);
+              $(`#logs .d${date - 1} .shifts .s${logs[i].shift} p`).append(`${logs[i].userId.alias} - ${logs[i].content}<br/>`);
             }
           }
-          $('.shifts >li').each(function() {
+          $('.shifts >li').each(function () {
             const _this = $(this);
             if (_this.find('p').innerHeight() > 125) {
               _this.slimScroll({ height: 125 });
@@ -236,11 +231,9 @@ function getRecap() {
         date = new Date(logs[i].date);
         if (date.getMonth() == month - 1) {
           date = date.getDate();
-          $(
-            `#logs .d${date - 1} .${logs[
+          $(`#logs .d${date - 1} .${logs[
             i
-          ].userId.alias.toLowerCase()} .shifts .s${logs[i].shift}`
-          )
+          ].userId.alias.toLowerCase()} .shifts .s${logs[i].shift}`)
             .append(logs[i].projectId.code)
             .addClass(`proj-${logs[i].projectId.code.replace(/[^\w\s]/gi, '')}`)
             .attr('title', logs[i].content)
@@ -249,9 +242,7 @@ function getRecap() {
       }
       for (let x = 0; x < projects.length; x++) {
         $(`.proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css({
-          'background-color': $(
-            `#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`
-          ).css('background-color'),
+          'background-color': $(`#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css('background-color'),
         });
       }
       $('.shifts li').click(function () {
@@ -283,9 +274,7 @@ function showPopup(elem) {
   if (typeof name === 'undefined') {
     name = $('#coaster').text();
   }
-  $('.popup h3').text(
-    `${name} | Shift ${shift}, ${date} ${$('#month').text()}`
-  );
+  $('.popup h3').text(`${name} | Shift ${shift}, ${date} ${$('#month').text()}`);
   if (elem.text != '' && typeof elem.attr('title') !== 'undefined') {
     $('.popup p').text(`[${elem.text()}] - ${elem.attr('title')}`);
     $('#input_log').val(elem.attr('title'));
@@ -328,12 +317,12 @@ $('.popup .content').click(e => {
   e.stopPropagation();
   e.preventDefault();
 });
-$('.popup .close').click(function() {
+$('.popup .close').click(function () {
   $(this)
     .parents('.popup')
     .fadeOut();
 });
-$('.popup').click(function() {
+$('.popup').click(function () {
   $(this).fadeOut();
 });
 $('.popup .btn').click(e => {
@@ -345,6 +334,6 @@ $('.popup .btn').click(e => {
   // 	$(".notice").fadeOut();
   // },1000)
   $.post(`${url}log`, $('#log-form').serialize()).done(data => {
-      location.reload();
-    });
+    location.reload();
+  });
 });
