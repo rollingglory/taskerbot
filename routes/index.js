@@ -67,7 +67,11 @@ router.get('/recap/:month-:year/user/:user', (req, res) => {
     .populate('userId', 'name alias')
     .populate('projectId', 'code')
     .exec()
-    .then(logs => res.json({ status: 'success', logs }))
+    .then(logs => res.json({
+      status: 'success',
+      user: logs[0].userId.name,
+      logs,
+    }))
     .catch(err => res.json({ status: 'failed', err }));
 });
 
@@ -97,7 +101,11 @@ router.get('/recap/:month-:year/project/:project', (req, res) => {
         this.date = new Date(this.date).getDate();
       });
     })
-    .then(logs => res.json({ status: 'success', logs }))
+    .then(logs => res.json({
+      status: 'success',
+      project: logs[0].projectId.name,
+      logs,
+    }))
     .catch(err => res.json({ status: 'failed', err }));
 });
 
