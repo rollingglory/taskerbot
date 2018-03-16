@@ -2,6 +2,9 @@
 
 const express = require('express');
 const moment = require('moment');
+const parse = require('date-fns/parse');
+const startOfMonth = require('date-fns/start_of_month');
+const endOfMonth = require('date-fns/end_of_month');
 const packageInfo = require('../package.json');
 const User = require('../models/user.js');
 const Project = require('../models/project.js');
@@ -23,17 +26,14 @@ router.get('/testapi', (req, res) => {
   res.render('testapi', { version: packageInfo.version });
 });
 
-router.get('/recap/:month-:year', (req, res) => {
+router.get('/recap/:date', (req, res) => {
   const origin = req.headers.origin;
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const year = req.params.year;
-  const month = req.params.month;
-
-  const start = new Date(year, month - 1, 1, 0, 0, 0);
-  const end = new Date(year, month - 1, 31, 23, 59, 59);
+  const start = startOfMonth(req.params.date);
+  const end = endOfMonth(req.params.date);
 
   Log.find({
     date: { $gte: start.getTime(), $lt: end.getTime() },
@@ -46,18 +46,15 @@ router.get('/recap/:month-:year', (req, res) => {
     .catch(err => res.json({ status: 'failed', err }));
 });
 
-router.get('/recap/:month-:year/user/:user', (req, res) => {
+router.get('/recap/:date/user/:user', (req, res) => {
   const origin = req.headers.origin;
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const year = req.params.year;
-  const month = req.params.month;
   const user = req.params.user;
-
-  const start = new Date(year, month - 1, 1, 0, 0, 0);
-  const end = new Date(year, month - 1, 31, 23, 59, 59);
+  const start = startOfMonth(req.params.date);
+  const end = endOfMonth(req.params.date);
 
   Log.find({
     date: { $gte: start.getTime(), $lt: end.getTime() },
@@ -75,18 +72,15 @@ router.get('/recap/:month-:year/user/:user', (req, res) => {
     .catch(err => res.json({ status: 'failed', err }));
 });
 
-router.get('/recap/:month-:year/project/:project', (req, res) => {
+router.get('/recap/:date/project/:project', (req, res) => {
   const origin = req.headers.origin;
   if (allowedOrigins.indexOf(origin) > -1) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const year = req.params.year;
-  const month = req.params.month;
   const project = req.params.project;
-
-  const start = new Date(year, month - 1, 1, 0, 0, 0);
-  const end = new Date(year, month - 1, 31, 23, 59, 59);
+  const start = startOfMonth(req.params.date);
+  const end = endOfMonth(req.params.date);
 
   Log.find({
     date: { $gte: start.getTime(), $lt: end.getTime() },
@@ -97,7 +91,7 @@ router.get('/recap/:month-:year/project/:project', (req, res) => {
     .populate('projectId', 'code name')
     .exec((err, log) => {
       if (err) return handleError(err);
-      log.forEach(function() {
+      log.forEach(function () {
         this.date = new Date(this.date).getDate();
       });
     })

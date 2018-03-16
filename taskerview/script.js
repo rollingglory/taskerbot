@@ -32,8 +32,8 @@ if (year % 4 == 0) daysInMonths[1] = 29;
 let when = gup('get');
 if (when != null) {
   when = when.split('-');
-  month = when[0];
-  year = when[1];
+  month = when[1];
+  year = when[0];
 }
 const firstDay = new Date(year, month - 1, '1', '07', '00', '00').getDay();
 
@@ -147,7 +147,7 @@ $(document).ready(() => {
           }
         }
         $.ajax({
-          url: `${url}recap/${month}-${year}/user/${idUser}`,
+          url: `${url}recap/${year}-${month}/user/${idUser}`,
         }).done(data => {
           const logs = data.logs;
           let date;
@@ -181,7 +181,7 @@ $(document).ready(() => {
     if (idProject) {
       $('.shifts li').append('<p></p>');
       $.ajax({
-        url: `${url}recap/${month}-${year}/project/${idProject}`,
+        url: `${url}recap/${year}-${month}/project/${idProject}`,
       }).done(data => {
         const logs = data.logs;
         let date;
@@ -223,7 +223,7 @@ function getRecap() {
   }
   if (coasters.length > 0 && projects.length > 0) {
     $.ajax({
-      url: `${url}recap/${month}-${year}`,
+      url: `${url}recap/${year}-${month}`,
     }).done(data => {
       const logs = data.logs;
       let date;
@@ -294,7 +294,7 @@ function prevMonth() {
     year--;
     month = 12;
   } else month--;
-  _target += `?get=${month}-${year}`;
+  _target += `?get=${year}-${month}`;
 
   if (idUser) _target += `&user=${idUser}`;
   if (idProject) _target += `&project=${idProject}`;
@@ -306,7 +306,7 @@ function nextMonth() {
     year++;
     month = 1;
   } else month++;
-  _target += `?get=${month}-${year}`;
+  _target += `?get=${year}-${month}`;
 
   if (idUser) _target += `&user=${idUser}`;
   if (idProject) _target += `&project=${idProject}`;
