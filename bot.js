@@ -1169,6 +1169,7 @@ function setAdmin(chatId) {
 
             return newUser.save();
           }
+        })
           // return User.update({_id: usr.id}, { role: "admin" }).exec();
         .then(usr => {
           console.log('admin tersimpan');
