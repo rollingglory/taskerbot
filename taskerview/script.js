@@ -69,7 +69,7 @@ $(document).ready(() => {
         coastersHtml += `<li><a href="byuser.html?user=${coasters[i]._id}">${
           coasters[i].alias
         }</a></li>`;
-        coasterLogList += `<li class="shift-owner ${coasters[coasters[i].alias.toLowerCase()]}" data-coaster="${
+        coasterLogList += `<li class="shift-owner ${coasters[i].alias.toLowerCase()}" data-coaster="${
           coasters[i].alias
         }" data-coaster-id="${coasters[i]._id}">${shifts}</li>`;
       }
