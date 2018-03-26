@@ -26,7 +26,8 @@
     "rollup-plugin-node-resolve": "^3.3.0"
   },
   "now": {
-    "alias": "rgb-task"
+    "alias": "rgb-task",
+    "dotenv": true
   },
   "eslintConfig": {
     "extends": "bentinata"

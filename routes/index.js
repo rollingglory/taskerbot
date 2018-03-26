@@ -14,7 +14,7 @@ const router = express.Router();
 const allowedOrigins = [
   'http://glyph.rollingglory.com',
   'http://rollingtaskerbot.herokuapp.com',
-  'http://rgb-task.now.sh',
+  'https://rgb-task.now.sh',
   'http://localhost',
   'http://localhost:8080',
 ];
