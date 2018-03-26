@@ -1,7 +1,6 @@
 'use strict';
 
 const express = require('express');
-const moment = require('moment');
 const parse = require('date-fns/parse');
 const startOfMonth = require('date-fns/start_of_month');
 const endOfMonth = require('date-fns/end_of_month');
@@ -14,6 +13,8 @@ const router = express.Router();
 
 const allowedOrigins = [
   'http://glyph.rollingglory.com',
+  'http://rollingtaskerbot.herokuapp.com',
+  'http://rgb-task.now.sh',
   'http://localhost',
   'http://localhost:8080',
 ];
@@ -22,22 +23,20 @@ router.get('/', (req, res) => {
   res.send({ version: packageInfo.version });
 });
 
-router.get('/testapi', (req, res) => {
-  res.render('testapi', { version: packageInfo.version });
-});
-
 router.get('/recap/:date', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const start = startOfMonth(req.params.date);
-  const end = endOfMonth(req.params.date);
 
-  Log.find({
-    date: { $gte: start.getTime(), $lt: end.getTime() },
-  })
+  Log
+    .find({
+      date: {
+        $gte: startOfMonth(req.params.date).getTime(),
+        $lt: endOfMonth(req.params.date).getTime(),
+      },
+    })
     .sort({ date: 1, userId: 1, shift: 1 })
     .populate('userId', 'alias')
     .populate('projectId', 'code')
@@ -48,18 +47,18 @@ router.get('/recap/:date', (req, res) => {
 
 router.get('/recap/:date/user/:user', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const user = req.params.user;
-  const start = startOfMonth(req.params.date);
-  const end = endOfMonth(req.params.date);
-
-  Log.find({
-    date: { $gte: start.getTime(), $lt: end.getTime() },
-    userId: user,
-  })
+  Log
+    .find({
+      date: {
+        $gte: startOfMonth(req.params.date).getTime(),
+        $lt: endOfMonth(req.params.date).getTime(),
+      },
+      userId: req.params.user,
+    })
     .sort({ date: 1, userId: 1, shift: 1 })
     .populate('userId', 'name alias')
     .populate('projectId', 'code')
@@ -74,26 +73,25 @@ router.get('/recap/:date/user/:user', (req, res) => {
 
 router.get('/recap/:date/project/:project', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const project = req.params.project;
-  const start = startOfMonth(req.params.date);
-  const end = endOfMonth(req.params.date);
-
-  Log.find({
-    date: { $gte: start.getTime(), $lt: end.getTime() },
-    projectId: project,
-  })
+  Log
+    .find({
+      date: {
+        $gte: startOfMonth(req.params.date).getTime(),
+        $lt: endOfMonth(req.params.date).getTime(),
+      },
+      projectId: req.params.project,
+    })
     .sort({ date: 1, shift: 1, userId: 1 })
     .populate('userId', 'alias')
     .populate('projectId', 'code name')
     .exec((err, log) => {
-      if (err) return handleError(err);
-      log.forEach(function () {
-        this.date = new Date(this.date).getDate();
-      });
+      if (err) return err;
+
+      return log.map(x => parse(x).getDate());
     })
     .then(logs => res.json({
       status: 'success',
@@ -105,7 +103,7 @@ router.get('/recap/:date/project/:project', (req, res) => {
 
 router.get('/users', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
@@ -119,11 +117,12 @@ router.get('/users', (req, res) => {
 
 router.get('/projects', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  Project.find({ isActive: true })
+  Project
+    .find({ isActive: true })
     .select('code name')
     .sort({ name: 1 })
     .exec()
@@ -133,109 +132,87 @@ router.get('/projects', (req, res) => {
 
 router.post('/log', (req, res) => {
   const origin = req.headers.origin;
-  if (allowedOrigins.indexOf(origin) > -1) {
+  if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  const userId = req.body.user_id;
-  const projectId = req.body.project_id;
-  const date = req.body.date;
-  const shift = req.body.shift;
-  const content = req.body.content;
-
-  date
-    .trim()
-    .split('/')
-    .forEach((item, idx) => {
-      switch (idx) {
-        case 0:
-          day = item;
-          break;
-        case 1:
-          month = item - 1;
-          break;
-        case 2:
-          year = item;
-          break;
-      }
-    });
-  const now = new Date(year, month, day, 0, 0, 0, 0);
-  const now_utc = new Date(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours(),
-    now.getUTCMinutes(),
-    now.getUTCSeconds()
-  );
-  const d = moment(now_utc)
-    .add(7, 'hours')
-    .toDate();
-
-  const newLog = new Log({
-    userId,
-    date: d.getTime(),
-    shift,
-    projectId,
-    content,
-  });
-  newLog
+  (new Log({
+    userId: req.body.user_id,
+    date: parse(req.body.date.split('/').reverse().join('/')).getTime(),
+    shift: req.body.shift,
+    projectId: req.body.project_id,
+    content: req.body.content,
+  }))
     .save()
     .then(log => {
-      if (log == null) {
-        var message = 'Log gagal disimpan. Coba lagi dalam beberapa saat.';
-        res.send({ success: false, message });
+      if (log) {
+        res.send({
+          success: false,
+          message: 'Logging berhasil! Terima kasih ya!',
+        });
       } else {
-        var message = 'Logging berhasil! Terima kasih ya!';
-        res.send({ success: true, message });
+        res.send({
+          success: true,
+          message: 'Log gagal disimpan. Coba lagi dalam beberapa saat.',
+        });
       }
     })
     .catch(err => {
-      console.log(err);
-      const message =
-        'Deskripsi gagal ditambahkan. Coba lagi dalam beberapa saat.';
-      res.send({ success: false, message });
+      console.error(err);
+      res.send({
+        success: false,
+        message: 'Deskripsi gagal ditambahkan. Coba lagi dalam beberapa saat.',
+      });
     });
 });
 
 router.post('/edit_log', (req, res) => {
-  const logId = req.body.log_id;
-  const projectId = req.body.project_id;
-  const content = req.body.content;
-
-  const updatedData = {
-    projectId,
-    content,
-  };
-  const promise = Log.update({ _id: logId }, { $set: updatedData });
-  promise
-    .then(result => {
-      if (result != null && result.ok == 1) {
-        var message = 'Log berhasil diubah';
-        res.send({ success: true, message });
+  Log
+    .update({ _id: req.body.log_id }, {
+      $set: {
+        projectId: req.body.project_id,
+        content: req.body.content,
+      },
+    })
+    .then(log => {
+      if (log && log.ok === 1) {
+        res.send({
+          success: true,
+          message: 'Log berhasil diubah',
+        });
       } else {
-        var message = 'Log gagal diubah. Coba lagi dalam beberapa saat.';
-        res.send({ success: false, message });
+        res.send({
+          success: false,
+          message: 'Log gagal diubah. Coba lagi dalam beberapa saat.',
+        });
       }
     })
     .catch(err => {
-      const message = 'Log gagal diubah. Coba lagi dalam beberapa saat.';
-      res.send({ success: false, message });
+      console.error(err);
+      res.send({
+        success: false,
+        message: 'Log gagal diubah. Coba lagi dalam beberapa saat.',
+      });
     });
 });
 
 router.post('/remove_log', (req, res) => {
-  const logId = req.body.log_id;
-  const promise = Log.findOneAndRemove({ _id: logId }).exec();
-  promise.then(log => {
-    if (log == null) {
-      var message = 'Log tidak ditemukan';
-      res.send({ success: false, message });
-    } else {
-      var message = 'Log berhasil dihapus';
-      res.send({ success: true, message });
-    }
-  });
+  Log
+    .findOneAndRemove({ _id: req.body.log_id })
+    .exec()
+    .then(log => {
+      if (log) {
+        res.send({
+          success: true,
+          message: 'Log berhasil dihapus',
+        });
+      } else {
+        res.send({
+          success: false,
+          message: 'Log tidak ditemukan',
+        });
+      }
+    });
 });
 
 module.exports = router;
