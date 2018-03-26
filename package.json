@@ -6,7 +6,9 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "start": "node server",
-    "now": "now --public && now alias",
+    "prenow": "now rm takserbot -y",
+    "now": "now --public",
+    "postnow": "now alias",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Muhammad Hasby",
