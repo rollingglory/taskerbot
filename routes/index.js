@@ -62,6 +62,7 @@ const smallDateUnit = (date) => {
 
 const getRange = (date) => {
   const { start, end } = smallDateUnit(date);
+
   return {
     $gte: start(date).getTime(),
     $lt: end(date).getTime(),
@@ -186,7 +187,7 @@ router.post('/log', (req, res) => {
     content: req.body.content,
   }))
     .save()
-    .then(log => {
+    .then((log) => {
       if (log) {
         res.send({
           success: false,
@@ -199,7 +200,7 @@ router.post('/log', (req, res) => {
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       res.send({
         success: false,
@@ -216,7 +217,7 @@ router.post('/edit_log', (req, res) => {
         content: req.body.content,
       },
     })
-    .then(log => {
+    .then((log) => {
       if (log && log.ok === 1) {
         res.send({
           success: true,
@@ -229,7 +230,7 @@ router.post('/edit_log', (req, res) => {
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
       res.send({
         success: false,
@@ -242,7 +243,7 @@ router.post('/remove_log', (req, res) => {
   Log
     .findOneAndRemove({ _id: req.body.log_id })
     .exec()
-    .then(log => {
+    .then((log) => {
       if (log) {
         res.send({
           success: true,
