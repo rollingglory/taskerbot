@@ -88,11 +88,7 @@ router.get('/recap/:date/project/:project', (req, res) => {
     .sort({ date: 1, shift: 1, userId: 1 })
     .populate('userId', 'alias')
     .populate('projectId', 'code name')
-    .exec((err, log) => {
-      if (err) return err;
-
-      return log.map(x => parse(x).getDate());
-    })
+    .exec()
     .then(logs => res.json({
       status: 'success',
       project: logs[0].projectId.name,
