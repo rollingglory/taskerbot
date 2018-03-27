@@ -1,15 +1,72 @@
 'use strict';
 
 const express = require('express');
-const parse = require('date-fns/parse');
-const startOfMonth = require('date-fns/start_of_month');
-const endOfMonth = require('date-fns/end_of_month');
+const {
+  parse,
+  startOfYear,
+  endOfYear,
+  startOfMonth,
+  endOfMonth,
+  startOfDay,
+  endOfDay,
+  startOfHour,
+  endOfHour,
+  startOfMinute,
+  endOfMinute,
+  startOfSecond,
+  endOfSecond,
+} = require('date-fns');
 const packageInfo = require('../package.json');
 const User = require('../models/user.js');
 const Project = require('../models/project.js');
 const Log = require('../models/log.js');
 
 const router = express.Router();
+
+const smallDateUnit = (date) => {
+  const helper = [
+    {
+      token: 'YYYY',
+      start: startOfYear,
+      end: endOfYear,
+    },
+    {
+      token: 'MM',
+      start: startOfMonth,
+      end: endOfMonth,
+    },
+    {
+      token: 'DD',
+      start: startOfDay,
+      end: endOfDay,
+    },
+    {
+      token: 'HH',
+      start: startOfHour,
+      end: endOfHour,
+    },
+    {
+      token: 'mm',
+      start: startOfMinute,
+      end: endOfMinute,
+    },
+    {
+      token: 'ss',
+      start: startOfSecond,
+      end: endOfSecond,
+    },
+  ];
+
+  return helper[date.split(/[-T:Z]/).length - 1];
+};
+
+const getRange = (date) => {
+  const { start, end } = smallDateUnit(date);
+  return {
+    $gte: start(date).getTime(),
+    $lt: end(date).getTime(),
+  };
+};
 
 const allowedOrigins = [
   'http://glyph.rollingglory.com',
@@ -31,12 +88,7 @@ router.get('/recap/:date', (req, res) => {
 
 
   Log
-    .find({
-      date: {
-        $gte: startOfMonth(req.params.date).getTime(),
-        $lt: endOfMonth(req.params.date).getTime(),
-      },
-    })
+    .find({ date: getRange(req.params.date) })
     .sort({ date: 1, userId: 1, shift: 1 })
     .populate('userId', 'alias')
     .populate('projectId', 'code')
@@ -53,10 +105,7 @@ router.get('/recap/:date/user/:user', (req, res) => {
 
   Log
     .find({
-      date: {
-        $gte: startOfMonth(req.params.date).getTime(),
-        $lt: endOfMonth(req.params.date).getTime(),
-      },
+      date: getRange(req.params.date),
       userId: req.params.user,
     })
     .sort({ date: 1, userId: 1, shift: 1 })
@@ -79,10 +128,7 @@ router.get('/recap/:date/project/:project', (req, res) => {
 
   Log
     .find({
-      date: {
-        $gte: startOfMonth(req.params.date).getTime(),
-        $lt: endOfMonth(req.params.date).getTime(),
-      },
+      date: getRange(req.params.date),
       projectId: req.params.project,
     })
     .sort({ date: 1, shift: 1, userId: 1 })
