@@ -5,9 +5,13 @@ const app = express();
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cachegoose = require('cachegoose');
 const index = require('./routes/index');
 
-mongoose.Promise = global.Promise;
+cachegoose(mongoose, {
+  port: 6379,
+  host: 'localhost',
+});
 mongoose.connect(process.env.TASKERBOT_MONGO_CRED);
 
 // view engine setup
