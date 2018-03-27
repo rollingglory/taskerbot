@@ -6,9 +6,9 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "start": "node server",
-    "prenow": "now rm taskerbot -y",
+    "nowls": "now ls taskerbot | tail -n +6 | tr -s ' ' | cut -d ' ' -f 2",
     "now": "now --public",
-    "postnow": "now alias",
+    "postnow": "now alias && now rm -y $(npm run nowls --silent)",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Muhammad Hasby",
