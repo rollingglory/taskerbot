@@ -2,6 +2,7 @@
 
 const Koa = require('koa');
 const app = new Koa();
+const cors = require('@koa/cors');
 const mount = require('koa-mount');
 const koaStatic = require('koa-static');
 const bodyparser = require('koa-bodyparser');
@@ -17,6 +18,13 @@ mongoose.connect(process.env.TASKERBOT_MONGO_CRED);
 
 // view engine setup
 
+app.use(cors({
+  origin: [
+    'http://glyph.rollingglory.com',
+    'http://rollingtaskerbot.herokuapp.com',
+    'https://rgb-task.now.sh',
+  ],
+}));
 app.use(koaStatic('public'));
 app.use(koaStatic('node_modules'));
 app.use(bodyparser());

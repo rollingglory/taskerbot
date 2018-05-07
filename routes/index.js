@@ -70,14 +70,6 @@ const getRange = (date) => {
   };
 };
 
-const allowedOrigins = [
-  'http://glyph.rollingglory.com',
-  'http://rollingtaskerbot.herokuapp.com',
-  'https://rgb-task.now.sh',
-  'http://localhost',
-  'http://localhost:8080',
-];
-
 const get = (...args) => app.use(route.get(...args));
 const post = (...args) => app.use(route.post(...args));
 
@@ -86,10 +78,6 @@ get('/', async (ctx) => {
 });
 
 get('/recap/:date', async (ctx, date) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const logs = await Log
     .find({ date: getRange(date) })
     .sort({ date: 1, userId: 1, shift: 1 })
@@ -104,10 +92,6 @@ get('/recap/:date', async (ctx, date) => {
 });
 
 get('/recap/:date/user/:user', async (ctx, date, user) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const logs = await Log
     .find({
       date: getRange(date),
@@ -126,10 +110,6 @@ get('/recap/:date/user/:user', async (ctx, date, user) => {
 });
 
 get('/recap/:date/project/:project', async (ctx, date, project) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const logs = await Log
     .find({
       date: getRange(date),
@@ -148,10 +128,6 @@ get('/recap/:date/project/:project', async (ctx, date, project) => {
 });
 
 get('/users', async (ctx) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const users = await User.find({ isActive: true })
     .select('alias')
     .sort({ name: 1 })
@@ -164,10 +140,6 @@ get('/users', async (ctx) => {
 });
 
 get('/projects', async (ctx) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const projects = await Project
     .find({ isActive: true })
     .select('code name')
@@ -181,10 +153,6 @@ get('/projects', async (ctx) => {
 });
 
 post('/log', async (ctx) => {
-  if (allowedOrigins.includes(ctx.origin)) {
-    ctx.header('Access-Control-Allow-Origin', ctx.origin);
-  }
-
   const log = new Log({
     userId: ctx.request.body.user_id,
     date: parse(ctx.request.body.date.split('/').reverse().join('/')).getTime(),
