@@ -2,7 +2,7 @@
 
 const { name, version } = require('./package.json');
 const app = require('./web');
-const server = require('http').createServer(app);
+const server = require('http').createServer(app.callback());
 
 server.listen(process.env.PORT, () => {
   const { address, port } = server.address();
