@@ -72,6 +72,8 @@ const getRange = (date) => {
 
 const get = (...args) => app.use(route.get(...args));
 const post = (...args) => app.use(route.post(...args));
+const del = (...args) => app.use(route.delete(...args));
+const put = (...args) => app.use(route.put(...args));
 
 get('/', async (ctx) => {
   ctx.body = { version };
@@ -171,7 +173,7 @@ post('/log', async (ctx) => {
   }
 });
 
-post('/edit_log', async (ctx) => {
+put('/log', async (ctx) => {
   const status = await Log
     .update({ _id: ctx.request.body.log_id }, {
       $set: {
@@ -188,7 +190,7 @@ post('/edit_log', async (ctx) => {
   }
 });
 
-post('/remove_log', async (ctx) => {
+del('/log', async (ctx) => {
   const status = await Log
     .findOneAndRemove({ _id: ctx.request.body.log_id })
     .exec();
