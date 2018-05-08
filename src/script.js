@@ -1,4 +1,8 @@
+/* global $ */
+/* eslint-env browser */
 'use strict';
+
+require('./site.less');
 
 const parse = require('date-fns/parse');
 const locale = require('date-fns/locale/id');
@@ -6,6 +10,16 @@ const dateFnsFormat = require('date-fns/format');
 const format = (...args) => dateFnsFormat(...args, { locale });
 const getDaysInMonth = require('date-fns/get_days_in_month');
 const startOfMonth = require('date-fns/start_of_month');
+
+function gup(name, url) {
+  if (!url) url = location.href;
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  const regexS = `[\\?&]${name}=([^&#]*)`;
+  const regex = new RegExp(regexS);
+  const results = regex.exec(url);
+
+  return results == null ? null : results[1];
+}
 
 let coasters = [];
 let projects = [];
@@ -35,6 +49,93 @@ const idProject = gup('project');
 
 const url = '/';
 
+function showPopup(elem) {
+  $('#log form')[0].reset();
+  $('#log form option').removeAttr('selected');
+  const date = elem.parents('.day').data('date');
+  const shift = elem.data('shift');
+  let name = elem.parents('.shift-owner').data('coaster');
+  const id = elem.parents('.shift-owner').data('coaster-id');
+
+  $('#log-user-id').val(id);
+  $('#log-shift').val(shift);
+  $('#log-date').val(`${date}/${month}/${year}`);
+
+  if (typeof name === 'undefined') {
+    name = $('#coaster').text();
+  }
+
+  $('#log .modal-header').text(`${name} | Shift ${shift}, ${date} ${$('#month').text()}`);
+
+  if (elem.text !== '' && typeof elem.attr('title') !== 'undefined') {
+    $('#input_log').val(elem.attr('title'));
+    $(`#log option[value='${elem.data('project-id')}']`).attr('selected');
+  }
+
+  $('#log').modal();
+}
+
+function prevMonth() {
+  let target = window.location.origin + window.location.pathname;
+  if (month === 1) {
+    year -= 1;
+    month = 12;
+  } else month -= 1;
+  target += `?get=${year}-${month}`;
+
+  if (idUser) target += `&user=${idUser}`;
+  if (idProject) target += `&project=${idProject}`;
+  window.location.href = target;
+}
+
+function nextMonth() {
+  let target = window.location.origin + window.location.pathname;
+  if (month === 12) {
+    year += 1;
+    month = 1;
+  } else month += 1;
+  target += `?get=${year}-${month}`;
+
+  if (idUser) target += `&user=${idUser}`;
+  if (idProject) target += `&project=${idProject}`;
+  window.location.href = target;
+}
+
+function getRecap() {
+  if (firstDay === 0 || firstDay === 6) {
+    $('html,body').scrollTop(600);
+  }
+  if (coasters.length > 0 && projects.length > 0) {
+    $.ajax({
+      url: `${url}recap/${year}-${month}`,
+    }).done((data) => {
+      const logs = data.logs;
+      let date;
+      for (let i = 0; i < logs.length; i += 1) {
+        date = new Date(logs[i].date);
+        if (date.getMonth() === month - 1) {
+          date = date.getDate();
+          $(`#logs .d${date - 1} .${logs[
+            i
+          ].userId.alias.toLowerCase()} .shifts .s${logs[i].shift}`)
+            .append(logs[i].projectId.code)
+            .addClass(`proj-${logs[i].projectId.code.replace(/[^\w\s]/gi, '')}`)
+            .attr('title', logs[i].content)
+            .data('project-id', logs[i].projectId._id);
+        }
+      }
+      for (let x = 0; x < projects.length; x += 1) {
+        $(`.proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css({
+          'background-color': $(`#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css('background-color'),
+        });
+      }
+      $('.shifts li').click(function () {
+        showPopup($(this));
+      });
+    });
+  }
+}
+
 $(document).ready(() => {
   $('#month').text(format(date, 'MMMM YYYY'));
 
@@ -61,7 +162,7 @@ $(document).ready(() => {
       coasters = data.users;
       coastersHtml = '<div class="column coasters"><ul><li class="title"></li>';
       let coasterLogList = '';
-      for (let i = 0; i < coasters.length; i++) {
+      for (let i = 0; i < coasters.length; i += 1) {
         coastersHtml += `<li><a href="byuser.html?user=${coasters[i]._id}">${
           coasters[i].alias
         }</a></li>`;
@@ -74,11 +175,11 @@ $(document).ready(() => {
 
       $('#logs').append(coastersHtml);
 
-      for (let x = 0; x < daysInMonths[month - 1]; x++) {
+      for (let x = 0; x < daysInMonths[month - 1]; x += 1) {
         let dayHtml = '<div class="column day';
-        if (x == 0) {
+        if (x === 0) {
           dayHtml += ` day-offset-${firstDay}`;
-        } else if ((x + firstDay) % 7 == 1) $('#logs').append(`<hr />${coastersHtml}`);
+        } else if ((x + firstDay) % 7 === 1) $('#logs').append(`<hr />${coastersHtml}`);
 
         dayHtml += ` d${x}" data-date=${x + 1}><ul><li class="title">${x +
           1}</li>${coasterLogList}`;
@@ -88,12 +189,13 @@ $(document).ready(() => {
       }
       getRecap();
     });
+
     $.ajax({
       url: `${url}projects`,
     }).done((data) => {
       projects = data.projects;
-      for (let i = 0; i < projects.length; i++) {
-        if (projects[i].code != 'X') {
+      for (let i = 0; i < projects.length; i += 1) {
+        if (projects[i].code !== 'X') {
           $('#projects').append(`<li><div class="code proj-${
             projects[i].code.replace(/[^\w\s]/gi, '')
           }"><a href="byproject.html?project=${
@@ -111,11 +213,11 @@ $(document).ready(() => {
       getRecap();
     });
   } else {
-    for (let x = 0; x < daysInMonths[month - 1]; x++) {
+    for (let x = 0; x < daysInMonths[month - 1]; x += 1) {
       let dayHtml = '<div class="column day';
-      if (x == 0) {
+      if (x === 0) {
         dayHtml += ` day-offset-${firstDay}`;
-      } else if ((x + firstDay) % 7 == 1) $('#logs').append(`<hr />${separatorHtml}`);
+      } else if ((x + firstDay) % 7 === 1) $('#logs').append(`<hr />${separatorHtml}`);
 
       dayHtml += ` d${x}" data-date=${x + 1}><ul><li class="title">${x +
         1}</li>${shifts}</ul></div>`;
@@ -127,8 +229,8 @@ $(document).ready(() => {
         url: `${url}projects`,
       }).done((data) => {
         projects = data.projects;
-        for (let i = 0; i < projects.length; i++) {
-          if (projects[i].code != 'X') {
+        for (let i = 0; i < projects.length; i += 1) {
+          if (projects[i].code !== 'X') {
             $('#projects').append(`<li><div class="code proj-${
               projects[i].code.replace(/[^\w\s]/gi, '')
             }"><a href="byproject.html?project=${
@@ -152,15 +254,15 @@ $(document).ready(() => {
           if (typeof logs !== 'undefined') manday = logs.length;
 
           $('#manday').text(manday);
-          for (let i = 0; i < manday; i++) {
+          for (let i = 0; i < manday; i += 1) {
             date = new Date(logs[i].date);
-            if (date.getMonth() == month - 1) {
+            if (date.getMonth() === month - 1) {
               date = date.getDate();
               $(`#logs .d${date - 1} .shifts .s${logs[i].shift}`).append(logs[i].projectId.code).addClass(`proj-${logs[i].projectId.code.replace(/[^\w\s]/gi, '')}`).attr('title', logs[i].content)
                 .data('project-id', logs[i].projectId._id);
             }
           }
-          for (let x = 0; x < projects.length; x++) {
+          for (let x = 0; x < projects.length; x += 1) {
             $(`.proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css({
               'background-color': $(`#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css('background-color'),
             });
@@ -168,7 +270,7 @@ $(document).ready(() => {
           $('.shifts li').click(function () {
             showPopup($(this));
           });
-          if (firstDay == 0 || firstDay == 6) {
+          if (firstDay === 0 || firstDay === 6) {
             $('html,body').scrollTop(200);
           }
         });
@@ -184,17 +286,17 @@ $(document).ready(() => {
         $('#project').text(data.project);
         if (typeof logs !== 'undefined') {
           $('#manday').text(logs.length);
-          for (let i = 0; i < logs.length; i++) {
+          for (let i = 0; i < logs.length; i += 1) {
             date = new Date(logs[i].date);
-            if (date.getMonth() == month - 1) {
+            if (date.getMonth() === month - 1) {
               date = date.getDate();
               $(`#logs .d${date - 1} .shifts .s${logs[i].shift} p`).append(`${logs[i].userId.alias} - ${logs[i].content}<br/>`);
             }
           }
           $('.shifts >li').each(function () {
-            const _this = $(this);
-            if (_this.find('p').innerHeight() > 125) {
-              _this.slimScroll({ height: 125 });
+            const that = $(this);
+            if (that.find('p').innerHeight() > 125) {
+              that.slimScroll({ height: 125 });
             }
           });
         } else {
@@ -202,7 +304,7 @@ $(document).ready(() => {
         }
       });
       $('.shifts').addClass('linear');
-      if (firstDay == 0 || firstDay == 6) {
+      if (firstDay === 0 || firstDay === 6) {
         $('html,body').scrollTop(850);
       }
     }
@@ -213,123 +315,15 @@ $(document).ready(() => {
   });
 });
 
-function getRecap() {
-  if (firstDay == 0 || firstDay == 6) {
-    $('html,body').scrollTop(600);
-  }
-  if (coasters.length > 0 && projects.length > 0) {
-    $.ajax({
-      url: `${url}recap/${year}-${month}`,
-    }).done((data) => {
-      const logs = data.logs;
-      let date;
-      for (let i = 0; i < logs.length; i++) {
-        date = new Date(logs[i].date);
-        if (date.getMonth() == month - 1) {
-          date = date.getDate();
-          $(`#logs .d${date - 1} .${logs[
-            i
-          ].userId.alias.toLowerCase()} .shifts .s${logs[i].shift}`)
-            .append(logs[i].projectId.code)
-            .addClass(`proj-${logs[i].projectId.code.replace(/[^\w\s]/gi, '')}`)
-            .attr('title', logs[i].content)
-            .data('project-id', logs[i].projectId._id);
-        }
-      }
-      for (let x = 0; x < projects.length; x++) {
-        $(`.proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css({
-          'background-color': $(`#projects .proj-${projects[x].code.replace(/[^\w\s]/gi, '')}`).css('background-color'),
-        });
-      }
-      $('.shifts li').click(function () {
-        showPopup($(this));
-      });
-    });
-  } else return;
-}
-function gup(name, url) {
-  if (!url) url = location.href;
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  const regexS = `[\\?&]${name}=([^&#]*)`;
-  const regex = new RegExp(regexS);
-  const results = regex.exec(url);
-
-  return results == null ? null : results[1];
-}
-function showPopup(elem) {
-  $('.popup form')[0].reset();
-  $('#projects-dropdown option').removeAttr('selected');
-  const date = elem.parents('.day').data('date');
-  const shift = elem.data('shift');
-  let name = elem.parents('.shift-owner').data('coaster');
-  const id = elem.parents('.shift-owner').data('coaster-id');
-
-  $('#log-user-id').val(id);
-  $('#log-shift').val(shift);
-  $('#log-date').val(`${date}/${month}/${year}`);
-  if (typeof name === 'undefined') {
-    name = $('#coaster').text();
-  }
-  $('.popup h3').text(`${name} | Shift ${shift}, ${date} ${$('#month').text()}`);
-  if (elem.text != '' && typeof elem.attr('title') !== 'undefined') {
-    $('.popup p').text(`[${elem.text()}] - ${elem.attr('title')}`);
-    $('#input_log').val(elem.attr('title'));
-    $(`#projects-dropdown option[value='${elem.data('project-id')}']`).attr(
-      'selected',
-      'selected'
-    );
-  } else {
-    $('.popup p').html('<i>Kamu belum mengisi log, huh.</i>');
-  }
-  // $(".popup input").val("/log "+shift+" "+date+" "+month+" "+year);
-  $('.popup').fadeIn();
-}
-function prevMonth() {
-  let _target = window.location.origin + window.location.pathname;
-  if (month == 1) {
-    year--;
-    month = 12;
-  } else month--;
-  _target += `?get=${year}-${month}`;
-
-  if (idUser) _target += `&user=${idUser}`;
-  if (idProject) _target += `&project=${idProject}`;
-  window.location.href = _target;
-}
-function nextMonth() {
-  let _target = window.location.origin + window.location.pathname;
-  if (month == 12) {
-    year++;
-    month = 1;
-  } else month++;
-  _target += `?get=${year}-${month}`;
-
-  if (idUser) _target += `&user=${idUser}`;
-  if (idProject) _target += `&project=${idProject}`;
-  window.location.href = _target;
-}
-
-$('.popup .content').click((e) => {
-  e.stopPropagation();
+$('#log-form').submit((e) => {
   e.preventDefault();
-});
-$('.popup .close').click(function () {
-  $(this)
-    .parents('.popup')
-    .fadeOut();
-});
-$('.popup').click(function () {
-  $(this).fadeOut();
-});
-$('.popup .btn').click((e) => {
-  e.preventDefault();
-  // $(".popup input").select();
-  // document.execCommand("copy");
-  // $(".notice").fadeIn();
-  // setTimeout(function(){
-  // 	$(".notice").fadeOut();
-  // },1000)
-  $.post(`${url}log`, $('#log-form').serialize()).done((data) => {
+  $.post(`${url}log`, $(e.target).serialize()).done((data) => {
     location.reload();
   });
 });
+
+module.exports = {
+  getRecap,
+  nextMonth,
+  prevMonth,
+};

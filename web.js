@@ -25,7 +25,7 @@ app.use(cors({
     'https://rgb-task.now.sh',
   ],
 }));
-app.use(koaStatic('public'));
+app.use(koaStatic('taskerview'));
 app.use(koaStatic('node_modules'));
 app.use(bodyparser());
 app.use(mount('/', index));

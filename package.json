@@ -15,11 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^2.2.1",
-    "body-parser": "^1.18.2",
     "cachegoose": "^5.0.0",
     "date-fns": "^1.29.0",
-    "ejs": "^2.5.8",
-    "express": "^4.16.3",
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-mount": "^3.0.0",
@@ -48,6 +45,7 @@
     "prettier": "^1.11.1",
     "rollup": "^0.57.1",
     "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-less": "^0.1.4",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-uglify": "^3.0.0",
     "wherr": "^1.0.0"
