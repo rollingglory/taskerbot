@@ -10,6 +10,10 @@ const dateFnsFormat = require('date-fns/format');
 const format = (...args) => dateFnsFormat(...args, { locale });
 const getDaysInMonth = require('date-fns/get_days_in_month');
 const startOfMonth = require('date-fns/start_of_month');
+const blacklist = [
+  "Halida",
+  "Vian"
+];
 
 function gup(name, url) {
   if (!url) url = location.href;
@@ -159,7 +163,7 @@ $(document).ready(() => {
 
   if (!idUser && !idProject) {
     $.ajax(`${url}users`).done((data) => {
-      coasters = data.users;
+      coasters = data.users.filter(coaster => !blacklist.includes(coaster.alias));
       coastersHtml = '<div class="column coasters"><ul><li class="title"></li>';
       let coasterLogList = '';
       for (let i = 0; i < coasters.length; i += 1) {
