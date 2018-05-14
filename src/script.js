@@ -2,7 +2,43 @@
 /* eslint-env browser */
 'use strict';
 
-require('./site.less');
+import './site.less';
+
+import Vue from 'vue';
+import Vuex from 'vuex';
+import Router from 'vue-router';
+import Axios from 'vue-axios';
+import axios from 'axios';
+import App from './App.vue';
+import Index from './Index.vue';
+import User from './User.vue';
+import Project from './Project.vue';
+
+Vue.use(Vuex);
+Vue.use(Axios, axios);
+
+const router = new Router({
+  routes: [
+    // {
+    //   path: '/',
+    //   component: Index,
+    // },
+    {
+      path: '/user/:id',
+      component: User,
+    },
+    {
+      path: '/project/:id',
+      component: Project,
+    },
+  ],
+});
+
+new Vue({
+  el: '#app',
+  render: r => r(App),
+  router,
+});
 
 const parse = require('date-fns/parse');
 const locale = require('date-fns/locale/id');

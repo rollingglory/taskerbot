@@ -5,20 +5,24 @@ const path = require('path');
 const Html = require('html-webpack-plugin');
 const Clean = require('clean-webpack-plugin');
 const Minicss = require('mini-css-extract-plugin');
+const Vue = require('vue-loader/lib/plugin');
 
-const production = process.env.NODE_ENV === 'production';
+const mode = process.env.NODE_ENV || 'development';
+const production = mode === 'production';
 // const css = production ?
 //   'file-loader?name=[name].css!extract-loader' :
 //   'style-loader';
 
 module.exports = {
-  entry: {
-    script: './src/script.js',
-    //site: `${css}!css-loader!less-loader!./src/site.less`,
-  },
+  entry: [
+    './src/script.js',
+  ],
   output: {
     path: path.resolve(__dirname, 'taskerview'),
+    publicPath: '/',
   },
+  mode,
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -26,9 +30,19 @@ module.exports = {
         use: ['html-loader'],
       },
       {
+        test: /\.vue$/,
+        use: ['vue-loader'],
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
         test: /\.less$/,
         use: [
-          production ? Minicss.loader : 'style-loader',
+          //production ? Minicss.loader : 'style-loader',
+          'vue-style-loader',
           'css-loader',
           'less-loader',
         ],
@@ -49,5 +63,6 @@ module.exports = {
     new Html({
       template: './src/index.html',
     }),
+    new Vue(),
   ],
 };
