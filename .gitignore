@@ -1,6 +1,5 @@
 # Ignore build file
-taskerview/*.js
-taskerview/*.css
+taskerview
 
 # Logs
 logs

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type='text/css'>
     <link href="https://fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet">
     <link rel="stylesheet" href="site.css" type='text/css'>
+
   </head>
   <body>
     <!--remove if this supports IE7 and below-->
@@ -29,12 +30,14 @@
     <![endif]-->
     <div class="tasker container-fluid">
       <div class="col-md-2 sidebar">
-        <h1><a href="#">Rolling Tasker</a></h1>
+        <h1><a href="/tasker">Rolling Tasker</a></h1>
+        <h2 id="coaster"></h2>
+        <!--p>Manday: <span id="manday"></span></p-->
         <h2>Projects</h2>
         <ol id="projects">
         </ol>
       </div>
-      <div class="col-md-10 col-md-offset-2 main">
+      <div class="col-md-10 col-md-offset-2 main hide-left">
         <div class="log-header">
           <h2 id="month"></h2>
           <div class="row" id="days">
@@ -43,35 +46,22 @@
           </div>
         </div>
         <div class="row log-content" id="logs">
+          <div class='column coasters'></div>
         </div>
       </div>
-      <div id="log" class="modal fade" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
+      <div class="popup">
+        <div class="content">
+          <div class="close">&times;</div>
+          <h3></h3>
+          <p></p>
+          <form>
+            <label>TaskerBot Command</label>
+            <input id="command" class="form-control" />
+            <div class="text-right">
+              <span class="notice">Command copied to clipboard!</span>
+              <button class="btn btn-default">Copy</button>
             </div>
-            <div class="modal-body">
-              <form id="log-form">
-                <div class="form-group">
-                  <label for="projects-dropdown">Project</label>
-                  <select id="projects-dropdown" class="form-control" name="project_id">
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="input_log">Description</label>
-                  <!-- <input id="command" class="form-control" /> -->
-                  <input id="input_log" name="content" class="form-control">
-                </div>
-                <input id="log-user-id" name="user_id" type="hidden">
-                <input id="log-date" name="date" type="hidden">
-                <input id="log-shift" name="shift" type="hidden">
-                <div class="text-right">
-                  <!-- <span class="notice">Command copied to clipboard!</span> -->
-                  <input class="btn btn-default" type="submit" value="Submit">
-                </div>
-              </form>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

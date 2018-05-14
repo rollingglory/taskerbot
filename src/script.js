@@ -11,8 +11,8 @@ const format = (...args) => dateFnsFormat(...args, { locale });
 const getDaysInMonth = require('date-fns/get_days_in_month');
 const startOfMonth = require('date-fns/start_of_month');
 const blacklist = [
-  "Halida",
-  "Vian"
+  'Halida',
+  'Vian',
 ];
 
 function gup(name, url) {
