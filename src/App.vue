@@ -1,22 +1,14 @@
 <template>
-  <div id="app" class="tasker container-fluid">
+  <div class="tasker container-fluid">
     <div class="col-md-2 sidebar">
-      <h1><a href="#">Rolling Tasker</a></h1>
+      <h1><router-link to="/">Rolling Tasker</router-link></h1>
       <h2>Projects</h2>
       <ol id="projects">
       </ol>
+      <router-link to="/user/1">User</router-link>
+      <router-link to="/project/1">Project</router-link>
     </div>
-    <router-view></router-view>
-    <div class="col-md-10 col-md-offset-2 main">
-      <div class="log-header">
-        <h2 id="month"></h2>
-        <div class="row" id="days">
-          <div class="column">
-          </div>
-        </div>
-      </div>
-      <div class="row log-content" id="logs">
-      </div>
-    </div>
+    <router-view class="col-md-10 col-md-offset-2 main">
+    </router-view>
   </div>
 </template>

@@ -14,42 +14,57 @@ import Index from './Index.vue';
 import User from './User.vue';
 import Project from './Project.vue';
 
+import { parse, format, addMonths, getDaysInMonth, startOfMonth } from 'date-fns';
+const fmt = format;//(...args) => format(...args, { locale });
+const blacklist = [
+  'Halida',
+  'Vian',
+];
+
 Vue.use(Vuex);
+Vue.use(Router);
 Vue.use(Axios, axios);
 
 const router = new Router({
+  // mode: 'history',
   routes: [
-    // {
-    //   path: '/',
-    //   component: Index,
-    // },
+    {
+      path: '/:date?',
+      name: 'Index',
+      component: Index,
+    },
     {
       path: '/user/:id',
+      name: 'Users',
       component: User,
     },
     {
       path: '/project/:id',
+      name: 'Projects',
       component: Project,
     },
   ],
 });
 
-new Vue({
-  el: '#app',
-  render: r => r(App),
-  router,
+const store = new Vuex.Store({
+  state: {
+    date: Date.now(),
+    projects: Vue.axios.get('/projects').then((resp) => resp.data),
+  },
+  mutations: {
+    prevMonth: (state) => addMonths(state.date, -1),
+    nextMonth: (state) => addMonths(state.date, 1),
+  },
 });
 
-const parse = require('date-fns/parse');
-const locale = require('date-fns/locale/id');
-const dateFnsFormat = require('date-fns/format');
-const format = (...args) => dateFnsFormat(...args, { locale });
-const getDaysInMonth = require('date-fns/get_days_in_month');
-const startOfMonth = require('date-fns/start_of_month');
-const blacklist = [
-  'Halida',
-  'Vian',
-];
+new Vue({
+  el: '#app',
+  router,
+  store,
+  render: h => h(App),
+});
+
+//import * as locale from 'date-fns/locale/id';
 
 function gup(name, url) {
   if (!url) url = location.href;
@@ -177,11 +192,11 @@ function getRecap() {
 }
 
 $(document).ready(() => {
-  $('#month').text(format(date, 'MMMM YYYY'));
+  $('#month').text(fmt(date, 'MMMM YYYY'));
 
 
   [...Array(7)]
-    .map((x, i) => format(new Date(0, 0, i + 1), 'dddd'))
+    .map((x, i) => fmt(new Date(0, 0, i + 1), 'dddd'))
     .forEach(x => $('#days').append(`<div class='column'>${x}</div>`));
 
   if ($('#projects').length > 0) {
@@ -361,9 +376,3 @@ $('#log-form').submit((e) => {
     location.reload();
   });
 });
-
-module.exports = {
-  getRecap,
-  nextMonth,
-  prevMonth,
-};
