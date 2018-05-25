@@ -5,6 +5,7 @@ const app = new Koa();
 const route = require('koa-route');
 const {
   parse,
+  format,
   startOfYear,
   endOfYear,
   startOfMonth,
@@ -77,6 +78,11 @@ const put = (...args) => app.use(route.put(...args));
 
 get('/', async (ctx) => {
   ctx.body = { version };
+});
+
+get('/recap', async (ctx) => {
+  ctx.status = 302;
+  ctx.redirect(`/recap/${format(Date.now(), 'YYYY-MM')}`);
 });
 
 get('/recap/:date', async (ctx, date) => {
