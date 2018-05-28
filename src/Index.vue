@@ -2,21 +2,22 @@
   <div>
     <div class="log-header">
       <navigation></navigation>
-      <h2 id="month"></h2>
-      <div class="row" id="days">
-        <div class="column">
-        </div>
-      </div>
     </div>
-    <div class="row log-content" id="logs">
-    </div>
+    <list-log
+      v-for="user of this.$store.getters.getUserAliases"
+      :key="user"
+      :user="user"
+      >
+    </list-log>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import navigation from './Navigation.vue'
+import listLog from './ListLog.vue'
 
 export default {
-  components: { navigation },
+  components: { navigation, listLog },
 }
 </script>

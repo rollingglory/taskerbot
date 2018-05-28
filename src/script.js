@@ -1,13 +1,10 @@
 /* global $ */
 /* eslint-env browser */
-'use strict';
-
 import './site.less';
 
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Router from 'vue-router';
-import Axios from 'vue-axios';
 import axios from 'axios';
 import App from './App.vue';
 import Index from './Index.vue';
@@ -15,6 +12,7 @@ import User from './User.vue';
 import Project from './Project.vue';
 
 import { parse, format, addMonths, getDaysInMonth, startOfMonth } from 'date-fns';
+//import * as locale from 'date-fns/locale/id';
 const fmt = format;//(...args) => format(...args, { locale });
 const blacklist = [
   'Halida',
@@ -23,24 +21,23 @@ const blacklist = [
 
 Vue.use(Vuex);
 Vue.use(Router);
-Vue.use(Axios, axios);
 
 const router = new Router({
   // mode: 'history',
   routes: [
     {
       path: '/:date?',
-      name: 'Index',
+      name: 'index',
       component: Index,
     },
     {
       path: '/user/:id',
-      name: 'Users',
+      name: 'users',
       component: User,
     },
     {
       path: '/project/:id',
-      name: 'Projects',
+      name: 'projects',
       component: Project,
     },
   ],
@@ -49,22 +46,37 @@ const router = new Router({
 const store = new Vuex.Store({
   state: {
     date: Date.now(),
-    projects: Vue.axios.get('/projects').then((resp) => resp.data),
+    projects: [],
+    users: [],
+    logs: [],
+  },
+  getters: {
+    getLogsByUser: (state) => (user) => state.logs.filter(log => log.userId.alias === user),
+    getUserAliases: (state) => state.users.map(user => user.alias),
   },
   mutations: {
-    prevMonth: (state) => addMonths(state.date, -1),
-    nextMonth: (state) => addMonths(state.date, 1),
+    setProjects: (state, data) => state.projects = data,
+    setUsers: (state, data) => state.users = data,
+    setLogs: (state, data) => state.logs = data,
+    changeMonth: (state, delta) => addMonths(state.date, delta),
   },
 });
 
-new Vue({
+const app = new Vue({
   el: '#app',
   router,
   store,
   render: h => h(App),
-});
+  async mounted() {
+    const { data: { projects }} = await axios.get('/projects');
+    const { data: { users }} = await axios.get('/users');
+    const { data: { logs }} = await axios.get('/recap');
 
-//import * as locale from 'date-fns/locale/id';
+    this.$store.commit('setProjects', projects);
+    this.$store.commit('setUsers', users.filter(user => !blacklist.includes(user.alias)));
+    this.$store.commit('setLogs', logs);
+  },
+});
 
 function gup(name, url) {
   if (!url) url = location.href;
@@ -376,3 +388,5 @@ $('#log-form').submit((e) => {
     location.reload();
   });
 });
+
+export default app;

@@ -1,13 +1,18 @@
 <template>
-  <div>{{ message }}</div>
+  <router-link
+    :to="`/user/${user}`"
+    :class="`accent${color(code)}`"
+    :title="title"
+    >{{ code }}</router-link>
 </template>
 
 <script>
-  module.exports = {
-    data() {
-      return {
-        message: 'Hey there',
-      }
-    },
-  };
+const color = s => [...s].reduce((a, x) => a + x.codePointAt(0), 0) % 8
+
+export default {
+  props: ['user', 'title', 'code'],
+  methods: {
+    color,
+  },
+};
 </script>
