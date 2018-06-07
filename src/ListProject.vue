@@ -2,7 +2,7 @@
   <ol class="list-project">
     <li v-for="project in this.$store.state.projects">
       <router-link :to="`project/${project.code}`">
-        <div :class="`accent${color(project.code)}`">{{ project.code }}</div>
+        <div :class="`color accent${color(project.code)}`">{{ project.code }}</div>
         {{ project.name }}
       </router-link>
     </li>
@@ -20,15 +20,6 @@
 
 .list-project > li{
   margin-bottom:5px;
-}
-
-.list-project div {
-  width: 50px;
-  padding: 3px;
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  overflow: hidden;
 }
 </style>
 

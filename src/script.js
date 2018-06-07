@@ -10,6 +10,7 @@ import App from './App.vue';
 import Index from './Index.vue';
 import User from './User.vue';
 import Project from './Project.vue';
+import Log from './Log.vue';
 
 import { parse, format, addMonths, getDaysInMonth, startOfMonth } from 'date-fns';
 //import * as locale from 'date-fns/locale/id';
@@ -40,6 +41,11 @@ const router = new Router({
       name: 'projects',
       component: Project,
     },
+    {
+      path: '/log/:id',
+      name: 'logs',
+      component: Log,
+    },
   ],
 });
 
@@ -51,16 +57,18 @@ const store = new Vuex.Store({
     logs: [],
   },
   getters: {
-    getLogsByUser: (state) => (user) => state.logs.filter(log => log.userId.alias === user),
+    getLogsByUser: (state) => (user) => state.logs
+    .filter(log => log.userId.alias === user)
+    .map(log => Object.assign(log, { code: log.projectId.code })),
     getUserAliases: (state) => state.users.map(user => user.alias),
   },
-  mutations: {
-    setProjects: (state, data) => state.projects = data,
-    setUsers: (state, data) => state.users = data,
-    setLogs: (state, data) => state.logs = data,
-    changeMonth: (state, delta) => addMonths(state.date, delta),
-  },
-});
+    mutations: {
+      setProjects: (state, data) => state.projects = data,
+      setUsers: (state, data) => state.users = data,
+      setLogs: (state, data) => state.logs = data,
+      changeMonth: (state, delta) => addMonths(state.date, delta),
+    },
+  });
 
 const app = new Vue({
   el: '#app',

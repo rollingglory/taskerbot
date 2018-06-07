@@ -6,17 +6,11 @@ const Html = require('html-webpack-plugin');
 const Clean = require('clean-webpack-plugin');
 const Minicss = require('mini-css-extract-plugin');
 const Vue = require('vue-loader/lib/plugin');
-
 const mode = process.env.NODE_ENV || 'development';
 const production = mode === 'production';
-// const css = production ?
-//   'file-loader?name=[name].css!extract-loader' :
-//   'style-loader';
 
 module.exports = {
-  entry: [
-    './src/script.js',
-  ],
+  entry: ['./src/script.js'],
   output: {
     path: path.resolve(__dirname, 'taskerview'),
     publicPath: '/',
@@ -39,9 +33,16 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+        ],
+      },
+      {
         test: /\.less$/,
         use: [
-          //production ? Minicss.loader : 'style-loader',
+          production ? Minicss.loader : 'style-loader',
           'vue-style-loader',
           'css-loader',
           'less-loader',
